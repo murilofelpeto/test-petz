@@ -1,8 +1,10 @@
 package br.com.murilo.petz.dto.response;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import java.util.Objects;
 
-public class PetResponse {
+public class PetResponse extends RepresentationModel<PetResponse> {
 
     private Long id;
     private String nome;

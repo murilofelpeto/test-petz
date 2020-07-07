@@ -15,6 +15,9 @@ import java.util.Optional;
 @Service
 public class ClienteService {
 
+    private final static String CLIENTE_CADASTRADO = "Cliente já cadastrado!";
+    private final static String CLIENTE_NAO_EXISTE = "Cliente não encontrado!";
+
     private ClienteRepository clienteRepository;
 
     public ClienteService(@Autowired ClienteRepository clienteRepository) {
@@ -23,17 +26,13 @@ public class ClienteService {
 
     public Cliente saveCliente(final Cliente cliente) {
         if(this.clienteRepository.findByCpfOrEmail(cliente.getCpf(), cliente.getEmail()).isPresent()) {
-            throw new ResourceAlreadyExistException("Cliente já cadastrado");
+            throw new ResourceAlreadyExistException(CLIENTE_CADASTRADO);
         }
         return this.clienteRepository.save(cliente);
     }
 
     public Cliente findClienteById(final Long id) {
-        Optional<Cliente> optionalCliente = this.clienteRepository.findById(id);
-        if(optionalCliente.isPresent()) {
-            return optionalCliente.get();
-        }
-        throw new ResourceNotFoundException("Cliente não encontrado");
+        return this.clienteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(CLIENTE_NAO_EXISTE));
     }
 
     public Cliente updateCliente(final Long id, final Cliente cliente) {
@@ -41,14 +40,15 @@ public class ClienteService {
             cliente.setId(id);
             return this.clienteRepository.save(cliente);
         }
-        throw new ResourceNotFoundException("Cliente não existe na base!");
+        throw new ResourceNotFoundException(CLIENTE_NAO_EXISTE);
     }
 
     public void deleteCliente(final Long id, final Cliente cliente) {
         if(clientExist(id)){
             this.clienteRepository.delete(cliente);
+            return;
         }
-        throw new ResourceNotFoundException("Cliente não existe na base");
+        throw new ResourceNotFoundException(CLIENTE_NAO_EXISTE);
     }
 
     public Page<Cliente> findAll(Pageable pageable) {

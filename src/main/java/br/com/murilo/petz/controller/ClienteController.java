@@ -55,16 +55,20 @@ public class ClienteController {
     }
 
     @ApiOperation(value = "Remover um cliente da base")
-    @DeleteMapping(value = "id")
-    public void deleteClient(@PathVariable(value = "id")Long id, @RequestBody ClienteRequest clienteRequest) {
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity deleteClient(@PathVariable(value = "id")Long id, @RequestBody ClienteRequest clienteRequest) {
         this.clienteFacade.deleteCliente(id, clienteRequest);
+        return ResponseEntity.ok().build();
     }
 
     @ApiOperation(value = "Buscar todos os clientes com paginação")
     @GetMapping
     public ResponseEntity<Page<ClienteResponse>> findAllClientes(@PageableDefault(page = 0, size = 10, direction = ASC, sort = "id") Pageable pageable) {
         Page<ClienteResponse> clientes = this.clienteFacade.findAllClientes(pageable);
-        clientes.stream().forEach(cliente -> cliente.add(linkTo(methodOn(ClienteController.class).findClienteById(cliente.getId())).withSelfRel()));
-        return new ResponseEntity<>(clientes, HttpStatus.OK);
+        if(clientes.hasContent()) {
+            clientes.stream().forEach(cliente -> cliente.add(linkTo(methodOn(ClienteController.class).findClienteById(cliente.getId())).withSelfRel()));
+            return new ResponseEntity<>(clientes, HttpStatus.OK);
+        }
+        return ResponseEntity.noContent().build();
     }
 }
