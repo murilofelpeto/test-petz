@@ -1,5 +1,7 @@
 package br.com.murilo.petz.service;
 
+import br.com.murilo.petz.exception.ResourceAlreadyExistException;
+import br.com.murilo.petz.exception.ResourceNotFoundException;
 import br.com.murilo.petz.model.Cliente;
 import br.com.murilo.petz.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,20 +22,18 @@ public class ClienteService {
     }
 
     public Cliente saveCliente(final Cliente cliente) {
-        if(this.clienteRepository.findByCpfOrEmail(cliente.getCpf(), cliente.getEmail()).isPresent())
-        {
-            throw new RuntimeException("Cliente já cadastrado");
+        if(this.clienteRepository.findByCpfOrEmail(cliente.getCpf(), cliente.getEmail()).isPresent()) {
+            throw new ResourceAlreadyExistException("Cliente já cadastrado");
         }
         return this.clienteRepository.save(cliente);
     }
 
     public Cliente findClienteById(final Long id) {
         Optional<Cliente> optionalCliente = this.clienteRepository.findById(id);
-        if(optionalCliente.isPresent()){
+        if(optionalCliente.isPresent()) {
             return optionalCliente.get();
         }
-        //TODO Criar exception Client
-        throw new RuntimeException("Cliente não encontrado");
+        throw new ResourceNotFoundException("Cliente não encontrado");
     }
 
     public Cliente updateCliente(final Long id, final Cliente cliente) {
@@ -41,15 +41,14 @@ public class ClienteService {
             cliente.setId(id);
             return this.clienteRepository.save(cliente);
         }
-        //TODO criar exception Client
-        throw new RuntimeException("Cliente não existe na base!");
+        throw new ResourceNotFoundException("Cliente não existe na base!");
     }
 
     public void deleteCliente(final Long id, final Cliente cliente) {
         if(clientExist(id)){
             this.clienteRepository.delete(cliente);
         }
-        throw new RuntimeException("Cliente não existe na base");
+        throw new ResourceNotFoundException("Cliente não existe na base");
     }
 
     public Page<Cliente> findAll(Pageable pageable) {
@@ -57,10 +56,6 @@ public class ClienteService {
     }
 
     private Boolean clientExist(final Long id) {
-        final Optional<Cliente> optionalCliente = this.clienteRepository.findById(id);
-        if(optionalCliente.isPresent()){
-            return true;
-        }
-        return false;
+        return this.clienteRepository.findById(id).isPresent();
     }
 }
