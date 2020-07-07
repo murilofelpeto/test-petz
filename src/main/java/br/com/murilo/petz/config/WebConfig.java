@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -27,5 +28,19 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new PetToPetResponseConverter());
         registry.addConverter(new ClienteRequestToClienteConverter(conversionService));
         registry.addConverter(new ClienteToClienteResponseConverter(conversionService));
+    }
+
+    @Override
+    public void addCorsMappings(final CorsRegistry registry) {
+        registry.addMapping("/**").allowedMethods(
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "OPTIONS",
+                "HEAD",
+                "TRACE",
+                "CONNECT"
+        );
     }
 }
