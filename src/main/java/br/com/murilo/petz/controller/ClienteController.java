@@ -3,6 +3,7 @@ package br.com.murilo.petz.controller;
 import br.com.murilo.petz.dto.request.ClienteRequest;
 import br.com.murilo.petz.dto.response.ClienteResponse;
 import br.com.murilo.petz.facade.ClienteFacade;
+import br.com.murilo.petz.model.Cliente;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,5 +71,21 @@ public class ClienteController {
             return new ResponseEntity<>(clientes, HttpStatus.OK);
         }
         return ResponseEntity.noContent().build();
+    }
+
+    @ApiOperation(value = "Encontra um cliente pelo CPF")
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<ClienteResponse> findClienteByCpf(@PathVariable(value = "cpf")Long cpf) {
+        ClienteResponse cliente = this.clienteFacade.findClienteByCpf(cpf);
+        cliente.add(linkTo(methodOn(ClienteController.class).findClienteById(cliente.getId())).withSelfRel());
+        return new ResponseEntity<>(cliente, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Encontra um cliente pelo CPF")
+    @GetMapping("/email")
+    public ResponseEntity<ClienteResponse> findClienteByEmail(@RequestParam(value = "email", required = true)String email) {
+        ClienteResponse cliente = this.clienteFacade.findClienteByEmail(email);
+        cliente.add(linkTo(methodOn(ClienteController.class).findClienteById(cliente.getId())).withSelfRel());
+        return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
 }

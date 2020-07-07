@@ -55,6 +55,14 @@ public class ClienteService {
         return this.clienteRepository.findAll(pageable);
     }
 
+    public Cliente findClienteByCpf(Long cpf) {
+        return this.clienteRepository.findByCpf(cpf).orElseThrow(() -> new ResourceNotFoundException(CLIENTE_NAO_EXISTE));
+    }
+
+    public Cliente findClienteByEmail(String email) {
+        return this.clienteRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException(CLIENTE_NAO_EXISTE));
+    }
+
     private Boolean clientExist(final Long id) {
         return this.clienteRepository.findById(id).isPresent();
     }

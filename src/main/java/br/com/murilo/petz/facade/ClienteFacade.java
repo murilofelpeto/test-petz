@@ -48,4 +48,14 @@ public class ClienteFacade {
         final Page<Cliente> clientes = this.clienteService.findAll(pageable);
         return clientes.map(cliente -> this.conversionService.convert(cliente, ClienteResponse.class));
     }
+
+    public ClienteResponse findClienteByCpf(Long cpf) {
+        final Cliente cliente = this.clienteService.findClienteByCpf(cpf);
+        return this.conversionService.convert(cliente, ClienteResponse.class);
+    }
+
+    public ClienteResponse findClienteByEmail(String email) {
+        final Cliente cliente = this.clienteService.findClienteByEmail(email);
+        return this.conversionService.convert(cliente, ClienteResponse.class);
+    }
 }
