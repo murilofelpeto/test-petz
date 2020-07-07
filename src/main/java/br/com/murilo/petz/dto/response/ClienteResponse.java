@@ -1,11 +1,12 @@
 package br.com.murilo.petz.dto.response;
 
-import br.com.murilo.petz.model.Pet;
+
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 import java.util.Objects;
 
-public class ClienteResponse {
+public class ClienteResponse extends RepresentationModel<ClienteResponse> {
 
     private Long id;
     private String cpf;

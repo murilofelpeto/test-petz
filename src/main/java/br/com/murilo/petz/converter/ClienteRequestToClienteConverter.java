@@ -15,8 +15,10 @@ import java.util.stream.Collectors;
 @Service
 public class ClienteRequestToClienteConverter implements Converter<ClienteRequest, Cliente> {
 
-    @Autowired
-    private ConversionService conversionService;
+    private final ConversionService conversionService;
+    public ClienteRequestToClienteConverter(ConversionService conversionService) {
+        this.conversionService = conversionService;
+    }
 
     @Override
     public Cliente convert(final ClienteRequest clienteRequest) {

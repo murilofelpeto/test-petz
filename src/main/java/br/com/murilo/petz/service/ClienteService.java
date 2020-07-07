@@ -20,9 +20,10 @@ public class ClienteService {
     }
 
     public Cliente saveCliente(final Cliente cliente) {
-        this.clienteRepository.findByCpfOrEmail(cliente.getCpf(), cliente.getEmail())
-                .orElseThrow(() -> new RuntimeException("Cliente já cadastrado!"));
-
+        if(this.clienteRepository.findByCpfOrEmail(cliente.getCpf(), cliente.getEmail()).isPresent())
+        {
+            throw new RuntimeException("Cliente já cadastrado");
+        }
         return this.clienteRepository.save(cliente);
     }
 
