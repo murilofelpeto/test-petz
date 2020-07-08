@@ -1,11 +1,16 @@
 package br.com.murilo.petz.dto.request;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 public class PetRequest {
 
     private Long id;
+
+    @NotBlank(message = "{nome.not.valid}")
     private String nome;
+
+    @NotBlank(message = "{raca.not.valid}")
     private String raca;
 
     public PetRequest(final Long id, final String nome, final String raca) {

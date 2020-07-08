@@ -2,18 +2,32 @@ package br.com.murilo.petz.dto.request;
 
 import br.com.murilo.petz.dto.response.PetResponse;
 
+import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Objects;
 
 public class ClienteRequest {
 
     private Long id;
+
+    @NotNull(message = "{cpf.not.valid}")
     private String cpf;
+
+    @NotBlank(message = "{nome.not.valid}")
     private String nome;
     private String sexo;
+
+    @Min(value = 18, message = "{idade.min}")
+    @Max(value = 120, message = "{idade.max}")
+    @NotNull(message = "{idade.not.valid}")
     private int idade;
     private int telefone;
+
+    @NotBlank(message = "{email.null}")
+    @Email(message = "{email.not.valid}")
     private String email;
+
+    @NotNull(message = "{pet.not.empty}")
     private List<PetRequest> pets;
 
     public ClienteRequest(final Long id, final String cpf, final String nome, final String sexo, final int idade, final int telefone, final String email, final List<PetRequest> pets) {

@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.ASC;
@@ -32,7 +33,7 @@ public class PetController {
 
     @ApiOperation(value = "Criação de um Pet!")
     @PostMapping
-    public ResponseEntity<PetResponse> savePet(@RequestBody PetRequest petRequest) {
+    public ResponseEntity<PetResponse> savePet(@Valid @RequestBody PetRequest petRequest) {
         final PetResponse pet = this.petFacade.savePet(petRequest);
         pet.add(linkTo(methodOn(PetController.class).findPetById(pet.getId())).withSelfRel());
         return new ResponseEntity<>(pet, HttpStatus.CREATED);
@@ -41,7 +42,7 @@ public class PetController {
     @ApiOperation(value = "Atualização de um Pet!")
     @PutMapping("/{id}")
     public ResponseEntity<PetResponse> updatePet(@PathVariable(value = "id") Long id,
-                                                 @RequestBody PetRequest petRequest) {
+                                                 @Valid @RequestBody PetRequest petRequest) {
         final PetResponse pet = this.petFacade.updatePet(id, petRequest);
         pet.add(linkTo(methodOn(PetController.class).findPetById(pet.getId())).withSelfRel());
         return new ResponseEntity<>(pet, HttpStatus.OK);
@@ -50,7 +51,7 @@ public class PetController {
     @ApiOperation(value = "Deletar um Pet!")
     @DeleteMapping("/{id}")
     public ResponseEntity deletePet(@PathVariable(value = "id") Long id,
-                                    @RequestBody PetRequest petRequest) {
+                                    @Valid @RequestBody PetRequest petRequest) {
         this.petFacade.deletePet(id, petRequest);
         return ResponseEntity.ok().build();
     }

@@ -3,7 +3,6 @@ package br.com.murilo.petz.controller;
 import br.com.murilo.petz.dto.request.ClienteRequest;
 import br.com.murilo.petz.dto.response.ClienteResponse;
 import br.com.murilo.petz.facade.ClienteFacade;
-import br.com.murilo.petz.model.Cliente;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -31,7 +32,7 @@ public class ClienteController {
 
     @ApiOperation(value = "Criação de um cliente!")
     @PostMapping
-    public ResponseEntity<ClienteResponse> saveCliente(@RequestBody ClienteRequest clienteRequest) {
+    public ResponseEntity<ClienteResponse> saveCliente(@Valid @RequestBody ClienteRequest clienteRequest) {
         final ClienteResponse cliente = this.clienteFacade.saveCliente(clienteRequest);
         cliente.add(linkTo(methodOn(ClienteController.class).findClienteById(cliente.getId())).withSelfRel());
         return new ResponseEntity<>(cliente, HttpStatus.CREATED);
@@ -48,7 +49,7 @@ public class ClienteController {
     @ApiOperation(value = "Atualizar as informações de um cliente!")
     @PutMapping(value = "/{id}")
     public ResponseEntity<ClienteResponse> updateCliente(@PathVariable(value = "id")Long id,
-                                         @RequestBody ClienteRequest clienteRequest) {
+                                                         @Valid @RequestBody ClienteRequest clienteRequest) {
 
         final ClienteResponse cliente = this.clienteFacade.updateCliente(id, clienteRequest);
         cliente.add(linkTo(methodOn(ClienteController.class).findClienteById(cliente.getId())).withSelfRel());
@@ -57,7 +58,8 @@ public class ClienteController {
 
     @ApiOperation(value = "Remover um cliente da base")
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity deleteClient(@PathVariable(value = "id")Long id, @RequestBody ClienteRequest clienteRequest) {
+    public ResponseEntity deleteClient(@PathVariable(value = "id")Long id,
+                                       @Valid @RequestBody ClienteRequest clienteRequest) {
         this.clienteFacade.deleteCliente(id, clienteRequest);
         return ResponseEntity.ok().build();
     }
