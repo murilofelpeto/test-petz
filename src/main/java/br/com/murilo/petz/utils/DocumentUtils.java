@@ -37,6 +37,47 @@ public class DocumentUtils {
         }
     }
 
+    public static boolean validarCPF(String documento) {
+        if (documento.length() != 11) {
+            return false;
+        }
+
+        String numDig = documento.substring(0, 9);
+        return calcularDigito(numDig).equals(documento.substring(9, 11));
+    }
+
+    private static String calcularDigito(String documento) {
+        Integer primeiroDigito, segundoDigito;
+        int soma = 0;
+        int peso = 10;
+
+        for(int i = 0; i < documento.length(); i++) {
+            soma += Integer.parseInt(documento.substring(i, i + 1)) * peso--;
+        }
+
+        if(soma % 11 == 0 || soma % 11 == 1) {
+            primeiroDigito = 0;
+        }else {
+            primeiroDigito = 11 - (soma % 11);
+        }
+
+        soma = 0;
+        peso = 11;
+
+        for(int i = 0; i < documento.length(); i++) {
+            soma += Integer.parseInt(documento.substring(i, i + 1)) * peso--;
+        }
+        soma += primeiroDigito.intValue() * 2;
+
+        if(soma % 11 == 0 || soma % 11 == 1) {
+            segundoDigito = 0;
+        }else {
+            segundoDigito = 11 - (soma % 11);
+        }
+
+        return primeiroDigito.toString() + segundoDigito.toString();
+    }
+
     private static String descobrirTipoDocumento(String documento) {
         Integer documentSize = documento.length();
         boolean temPontuacao = StringUtils.contains(documento, "-");
